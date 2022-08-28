@@ -1,19 +1,10 @@
-# nodejs-posgresql
+# Automate Kendo -> Facebook ->  Youtube -> Whatsapp
+some shitty scripts to achieve the task above where we record the live videos in Facebook and upload the live video to Youtube and finally posting the youtube link to Whatsapp group
 
-A demo Quotes REST API using Node.js and PostgreSQL. Built with Express Js for this [Node.js PostgreSQL tutorial](https://geshan.com.np/blog/2021/01/nodejs-postgresql-tutorial/).
+# To execute...
+Go to facebook developer graph api explorer and populate the constant.py variables...
+then run the command below
+python .\automate_fb_kendo.py
 
-## Deploy with Heroku
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/geshan/nodejs-posgresql/tree/master)
-
-## Deploy with Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fgeshan%2Fnodejs-posgresql)
-
-## Deploy to [Cyclic](https://app.cyclic.sh/#/join/geshan)
-
-[![Deploy to Cyclic](https://deploy.cyclic.app/button.svg)](https://deploy.cyclic.app/)
-
-### Running on Vercel
-
-At: [https://nodejs-postgresql.vercel.app/quotes](https://nodejs-postgresql.vercel.app/quotes)
+## Requirements
+pip install -r requirements.txt

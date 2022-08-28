@@ -1,0 +1,4 @@
+﻿facebook-sdk
+numpy
+pandas
+requests
