@@ -8,6 +8,7 @@ import requests
 from asyncio import constants
 import facebook
 import constant
+import json
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%d/%m/%y %H:%M:%S"
@@ -110,8 +111,64 @@ def get_live_video_data(permanent_page_token):
     5. if all success... keep the video IDs in a saved file (preferably google drive account? but can be local 1st, or can auto commit and push to git also)
     6. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
     """
-    live_video_id = live_video_data["data"][0]["id"]
-    print(live_video_id)
+    current_video_ids = []
+    for video_data in live_video_data["data"]:
+        current_video_ids.append(video_data["id"])
+    unsaved_video_ids = get_unsaved_videos(current_video_ids)
+
+    save_uploaded_video_to_json(unsaved_video_ids)
+
+def get_unsaved_videos(current_video_ids):
+    unsaved_videos = []
+    try:
+        # Opening JSON file
+        with open(constant.STORED_VIDEO_JSON_FILE, 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            video_ids_in_json = json_object[constant.JSON_VIDEO_ID_KEY]
+            for video_id in current_video_ids:
+                if not video_id in video_ids_in_json:
+                    unsaved_videos.append(video_id)
+    except:
+        print("file is not created yet, stop reading. Assuming all videos are not uploaded yet")
+        return current_video_ids
+
+    return unsaved_videos
+
+def save_uploaded_video_to_json(unsaved_video_ids):
+    if (len(unsaved_video_ids) <= 0):
+        return
+    
+    new_video_object = {
+        constant.JSON_VIDEO_ID_KEY: [
+
+        ]
+    }
+    json_object_from_file = json.dumps(new_video_object, indent=4)
+
+    try:
+        # Opening JSON file
+        with open(constant.STORED_VIDEO_JSON_FILE, 'r') as openfile:
+            # Reading from json file
+            json_object_from_file = json.load(openfile)
+    except:
+        print("file is not created yet. Proceed writing to new file")
+
+    try:
+        video_list = json.loads(json_object_from_file)[constant.JSON_VIDEO_ID_KEY]
+    except:
+        video_list = json_object_from_file[constant.JSON_VIDEO_ID_KEY]
+    
+    video_list.extend(unsaved_video_ids)
+
+    new_video_object = {
+        constant.JSON_VIDEO_ID_KEY: video_list
+    }
+    json_object_from_file = json.dumps(new_video_object, indent=4)
+    
+    with open(constant.STORED_VIDEO_JSON_FILE, "w+") as outfile:
+        outfile.write(json_object_from_file)
+
 
 def main():
     long_lived_token = get_long_lived_user_token()
