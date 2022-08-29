@@ -106,12 +106,9 @@ def get_live_video_data(permanent_page_token):
     """
     """
     # TODO until here...
-    1. loop through videos
-    2. get the latest live video IDs, check from saved file whether the video has been uploaded before or not, if didnt upload before... proceed...
-    3. download the videos from source
-    4. upload to youtube
-    5. if all success... keep the video IDs in a saved file (preferably google drive account? but can be local 1st, or can auto commit and push to git also)
-    6. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
+    1. upload to youtube
+    2. if all success... keep the video IDs in a saved file (preferably google drive account? but can be local 1st, or can auto commit and push to git also)
+    3. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
     """
     current_video_ids = []
     for video_data in live_video_data["data"]:
