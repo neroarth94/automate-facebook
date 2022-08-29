@@ -3,12 +3,14 @@
 1) https://drgabrielharris.medium.com/python-how-making-facebook-api-calls-using-facebook-sdk-ea18bec973c8
 """
 
+import os
 import logging
 import requests
 from asyncio import constants
 import facebook
 import constant
 import json
+import requests
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%d/%m/%y %H:%M:%S"
@@ -113,10 +115,35 @@ def get_live_video_data(permanent_page_token):
     """
     current_video_ids = []
     for video_data in live_video_data["data"]:
-        current_video_ids.append(video_data["id"])
+        embed_url = video_data["embed_html"]
+        right_video_url = embed_url.split(r"videos%2F")
+        left_video_url = right_video_url[1].split(r"%2F&width")
+        video_id = left_video_url[0]
+        current_video_ids.append(video_id)
+
     unsaved_video_ids = get_unsaved_videos(current_video_ids)
 
-    save_uploaded_video_to_json(unsaved_video_ids)
+    success_unsaved_video_ids = []
+    for video_id in unsaved_video_ids:
+        if download_videos(permanent_page_token, video_id):
+            success_unsaved_video_ids.append(video_id)
+
+    save_uploaded_video_to_json(success_unsaved_video_ids)
+
+def download_videos(permanent_page_token, video_id):
+    try:
+        if not os.path.exists(constant.VIDEO_FOLDER):
+            os.makedirs(constant.VIDEO_FOLDER)
+
+        graph = facebook.GraphAPI(access_token=permanent_page_token, version=constant.FB_GRAPH_API_VERSION)
+        video_data = graph.get_object(video_id + "?fields=source")
+        source = video_data["source"]
+        response = requests.get(source)
+        open(constant.VIDEO_FOLDER + video_id + ".mp4", "wb").write(response.content)
+        return True
+    except:
+        print("something wrong happened when downloading video of ID: " + video_id)
+        return False
 
 def get_unsaved_videos(current_video_ids):
     unsaved_videos = []
