@@ -107,10 +107,11 @@ def get_live_video_data(permanent_page_token):
     """
     """
     # TODO until here...
-    1. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
-    2. probably need to use different authorization method for google because the oauth should expirer after some time. To confirm again
-    3. able to get video titles, descriptions from facebook live? or self construct like "PKC Keiko 4th September 2022"?
-    4. youtube video need thumbnail? or how to let it auto generate cuz very ugly without thumbnail
+    1. Well, a for loop with interval to ensure it keeps running without stopping...
+    2. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
+    3. probably need to use different authorization method for google because the oauth should expirer after some time. To confirm again
+    4. able to get video titles, descriptions from facebook live? or self construct like "PKC Keiko 4th September 2022"?
+    5. youtube video need thumbnail? or how to let it auto generate cuz very ugly without thumbnail
     """
     current_video_ids = []
     for video_data in live_video_data["data"]:
