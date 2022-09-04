@@ -1,6 +1,7 @@
 """
 *****REFERENCES*****
 1) https://drgabrielharris.medium.com/python-how-making-facebook-api-calls-using-facebook-sdk-ea18bec973c8
+2) https://developers.google.com/youtube/v3/guides/uploading_a_video
 """
 
 import os
@@ -106,9 +107,10 @@ def get_live_video_data(permanent_page_token):
     """
     """
     # TODO until here...
-    1. upload to youtube
-    2. if all success... keep the video IDs in a saved file (preferably google drive account? but can be local 1st, or can auto commit and push to git also)
-    3. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
+    1. automate sending youtube link to whatsapp group?... not sure can do free or not, macam can la if using own whatsapp account...
+    2. probably need to use different authorization method for google because the oauth should expirer after some time. To confirm again
+    3. able to get video titles, descriptions from facebook live? or self construct like "PKC Keiko 4th September 2022"?
+    4. youtube video need thumbnail? or how to let it auto generate cuz very ugly without thumbnail
     """
     current_video_ids = []
     for video_data in live_video_data["data"]:
@@ -129,6 +131,7 @@ def get_live_video_data(permanent_page_token):
 
 def download_videos(permanent_page_token, video_id):
     try:
+        video_file_path = constant.VIDEO_FOLDER + video_id + ".mp4"
         if not os.path.exists(constant.VIDEO_FOLDER):
             os.makedirs(constant.VIDEO_FOLDER)
 
@@ -136,11 +139,17 @@ def download_videos(permanent_page_token, video_id):
         video_data = graph.get_object(video_id + "?fields=source")
         source = video_data["source"]
         response = requests.get(source)
-        open(constant.VIDEO_FOLDER + video_id + ".mp4", "wb").write(response.content)
+        open(video_file_path, "wb").write(response.content)
+
+        upload_to_youtube(video_file_path, video_id)
         return True
     except:
         print("something wrong happened when downloading video of ID: " + video_id)
         return False
+
+def upload_to_youtube(video_file_path, video_id):
+    # categories: https://techpostplus.com/youtube-video-categories-list-faqs-and-solutions/
+    os.system('python upload_video.py --file='+video_file_path+' --title="'+video_id+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"')
 
 def get_unsaved_videos(current_video_ids):
     unsaved_videos = []

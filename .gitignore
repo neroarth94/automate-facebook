@@ -2,3 +2,5 @@ real_constant.py
 __pycache__/
 videos
 uploaded_videos.json
+upload_video.py-oauth2.json
+client_secrets_real.json
