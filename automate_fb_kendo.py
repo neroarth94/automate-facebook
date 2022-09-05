@@ -2,6 +2,8 @@
 *****REFERENCES*****
 1) https://drgabrielharris.medium.com/python-how-making-facebook-api-calls-using-facebook-sdk-ea18bec973c8
 2) https://developers.google.com/youtube/v3/guides/uploading_a_video
+3) https://www.geeksforgeeks.org/send-message-to-telegram-user-using-python/
+4) https://medium.com/@ManHay_Hong/how-to-create-a-telegram-bot-and-send-messages-with-python-4cf314d9fa3e
 """
 
 import os
@@ -12,6 +14,9 @@ import facebook
 import constant
 import json
 import requests
+import time
+import send_telegram
+import subprocess
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%d/%m/%y %H:%M:%S"
@@ -142,15 +147,29 @@ def download_videos(permanent_page_token, video_id):
         response = requests.get(source)
         open(video_file_path, "wb").write(response.content)
 
-        upload_to_youtube(video_file_path, video_id)
-        return True
-    except:
+        return upload_to_youtube(video_file_path, video_id)
+    except BaseException as e:
         print("something wrong happened when downloading video of ID: " + video_id)
+        print(e)
         return False
 
 def upload_to_youtube(video_file_path, video_id):
+    print("Querying youtube api now for this video id: " + video_id)
+    
     # categories: https://techpostplus.com/youtube-video-categories-list-faqs-and-solutions/
-    os.system('python upload_video.py --file='+video_file_path+' --title="'+video_id+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"')
+    cmd = 'python upload_video.py --file='+video_file_path+' --title="'+video_id+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"'
+    result = str(subprocess.check_output(cmd, shell=True))
+    
+    success_message = r"Video id was successfully uploaded:"
+    if (success_message not in result):
+        print("Upload video to youtube api has returned a response with error:")
+        print(result)
+        return False
+    
+    vid_left = result.split(success_message)
+    real_vid = vid_left[1].split("::::::")[0]
+    send_telegram.send_telegram_message("https://www.youtube.com/watch?v=" + real_vid)
+    return True
 
 def get_unsaved_videos(current_video_ids):
     unsaved_videos = []
@@ -213,6 +232,8 @@ def main():
     if ("" == permanent_page_token):
         print("gg some error occurred while getting page permanent access token")
         return
-    get_live_video_data(permanent_page_token)
+    while True:
+        get_live_video_data(permanent_page_token)
+        time.sleep(3600) # sleep 1 hour
 
 main()

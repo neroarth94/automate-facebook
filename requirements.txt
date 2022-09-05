@@ -5,3 +5,5 @@ requests
 google-api-python-client
 python_http_client
 oauth2client
+telebot
+telethon
