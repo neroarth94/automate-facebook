@@ -164,7 +164,7 @@ def upload_to_youtube(video_file_path, video_id):
     
     vid_left = result.split(success_message)
     real_vid = vid_left[1].split("::::::")[0]
-    send_telegram.send_telegram_message("https://www.youtube.com/watch?v=" + real_vid)
+    send_telegram.telegram_bot_send_message("https://www.youtube.com/watch?v=" + real_vid)
     return True
 
 def get_unsaved_videos(current_video_ids):
