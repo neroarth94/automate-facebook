@@ -17,6 +17,7 @@ import requests
 import time
 import send_telegram
 import subprocess
+from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%d/%m/%y %H:%M:%S"
@@ -110,10 +111,7 @@ def get_live_video_data(permanent_page_token):
         }
     }
     """
-    """
-    # TODO until here...
-    1. able to get video titles, descriptions from facebook live? or self construct like "PKC Keiko 4th September 2022"?
-    """
+
     current_video_ids = []
     for video_data in live_video_data["data"]:
         embed_url = video_data["embed_html"]
@@ -153,7 +151,8 @@ def upload_to_youtube(video_file_path, video_id):
     print("Querying youtube api now for this video id: " + video_id)
     
     # categories: https://techpostplus.com/youtube-video-categories-list-faqs-and-solutions/
-    cmd = 'python upload_video.py --file='+video_file_path+' --title="'+video_id+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"'
+    title = "Keiko " + datetime.today().strftime('%Y%m%d')
+    cmd = 'python upload_video.py --file='+video_file_path+' --title="'+title+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"'
     result = str(subprocess.check_output(cmd, shell=True))
     
     success_message = r"Video id was successfully uploaded:"
