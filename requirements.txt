@@ -7,4 +7,3 @@ python_http_client
 oauth2client
 telebot
 telethon
-python-certifi-win32
