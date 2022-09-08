@@ -4,6 +4,7 @@
 2) https://developers.google.com/youtube/v3/guides/uploading_a_video
 3) https://www.geeksforgeeks.org/send-message-to-telegram-user-using-python/
 4) https://medium.com/@ManHay_Hong/how-to-create-a-telegram-bot-and-send-messages-with-python-4cf314d9fa3e
+5) https://stackoverflow.com/questions/52870795/windows-python-ssl-certificate-verify-failed
 """
 
 import os
