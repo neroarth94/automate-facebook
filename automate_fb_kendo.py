@@ -156,7 +156,7 @@ def upload_to_youtube(video_file_path, video_id):
     
     # categories: https://techpostplus.com/youtube-video-categories-list-faqs-and-solutions/
     title = "Keiko " + datetime.today().strftime('%Y%m%d')
-    cmd = 'python upload_video.py --file='+video_file_path+' --title="'+title+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="public"'
+    cmd = 'python upload_video.py --file='+video_file_path+' --title="'+title+'"  --description="" --keywords="PKC, Penang Kendo Club, Kendo"  --category="17" --privacyStatus="unlisted"'
     result = str(subprocess.check_output(cmd, shell=True))
     
     success_message = r"Video id was successfully uploaded:"
@@ -226,16 +226,21 @@ def save_uploaded_video_to_json(unsaved_video_ids):
 
 
 def main():
-    long_lived_token = get_long_lived_user_token()
-    if ("" == long_lived_token):
-        print("gg some error occurred while getting long lived user token")
-        return
-    permanent_page_token = get_permanent_page_access_token(long_lived_token)
+    # long_lived_token = get_long_lived_user_token()
+    # if ("" == long_lived_token):
+    #     print("gg some error occurred while getting long lived user token")
+    #     return
+    # permanent_page_token = get_permanent_page_access_token(long_lived_token)
+    # print (permanent_page_token)
+    # return
+
+    permanent_page_token = "EAAJcOYZAmqjgBACjXNUZAkxwLI2lghfFRIZCZBUmMmBsg4r4lH164chCOzFfAdp6jAF2JlE3qZBKfokaHgdwaBuMADYk6OQKrBVfFBYeix7ZBjYmZBrxrZBoSiC6JWXXSqYrCGsFdPZByKY6rrWNZADkGZAFGhDG9Q6hBzI2oddGIxOa89hiko9U1ar"
+
     if ("" == permanent_page_token):
         print("gg some error occurred while getting page permanent access token")
         return
     while True:
         get_live_video_data(permanent_page_token)
-        time.sleep(3600) # sleep 1 hour
+        time.sleep(900) # sleep 15 min
 
 main()
