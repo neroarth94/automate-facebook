@@ -66,6 +66,8 @@ https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
                                    CLIENT_SECRETS_FILE))
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
+# to add to play list, refer here: https://stackoverflow.com/questions/21228815/adding-youtube-video-to-playlist-using-python
+PLAYLIST_ID = "PLeIPu-GTaQ6vSRB8cK91w6HFB2yCa_x9A" # PKC Keiko (unlisted)
 
 
 def get_authenticated_service(args):
@@ -117,11 +119,11 @@ def initialize_upload(youtube, options):
     media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
   )
 
-  resumable_upload(insert_request)
+  resumable_upload(youtube, insert_request)
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
-def resumable_upload(insert_request):
+def resumable_upload(youtubeObj, insert_request):
   response = None
   error = None
   retry = 0
@@ -131,6 +133,20 @@ def resumable_upload(insert_request):
       status, response = insert_request.next_chunk()
       if response is not None:
         if 'id' in response:
+          add_video_request=youtubeObj.playlistItems().insert(
+          part="snippet",
+          body={
+                'snippet': {
+                  'playlistId': PLAYLIST_ID, 
+                  'resourceId': {
+                          'kind': 'youtube#video',
+                      'videoId': response['id']
+                    }
+                #'position': 0
+                }
+            }
+          ).execute()
+
           print ("Video id was successfully uploaded:%s::::::" % response['id'])
         else:
           exit("The upload failed with an unexpected response: %s" % response)
